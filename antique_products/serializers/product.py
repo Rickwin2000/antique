@@ -23,6 +23,7 @@ class ProductPatchSerializer(serializers.ModelSerializer):
         status = data.get("status")
         if status in [False, "false"]:
             price = AuctionModel.objects.filter(product_id=id).aggregate(Max('price'))['price__max']
-            self.instance.starting_price = price
-            self.instance.save()
+            if price:
+                self.instance.starting_price = price
+                self.instance.save()
         return data
